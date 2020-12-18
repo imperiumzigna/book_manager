@@ -1,0 +1,75 @@
+version: "3.8"
+
+x-shared-config: &shared-config
+  # Comment previous line and uncomment following lines to recompile docker image
+  build:
+    context: .
+    dockerfile: ./docker/Dockerfile
+    args:
+      BUNDLER_VERSION: "1.17.3"
+      NODE_MAJOR: "12"
+      RUBY_VERSION: "2.5.1"
+  tmpfs:
+    - /tmp
+  stdin_open: true
+  tty: true
+  volumes:
+    - .:/app:cached
+    - ./docker/.bashrc:/root/.bashrc:ro
+    - ./docker/.irbrc:/root/.irbrc:ro
+    - ./docker/.psqlrc:/root/.psqlrc:ro
+    - base_cache_rails:/app/tmp/cache
+    - base_gems:/usr/src/gems
+    - base_packs:/app/public/packs
+
+  env_file:
+    - ./docker/postgres/.env
+
+  environment:
+    - CACHE_STORE_URL=redis://redis:6379/0
+    - POSTGRES_HOST=postgres
+    - SIDEKIQ_REDIS_URL=redis://redis:6379/0/cache
+    - WEB_CONCURRENCY=1
+  depends_on:
+    - postgres
+    - redis
+
+services:
+  api:
+    <<: *shared-config
+    command: bash -c "rm -f tmp/pids/server.pid && bundle install && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    ports:
+      - 3000:3000
+  api-sidekiq:
+    <<: *shared-config
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    networks:
+      - gateway
+  postgres:
+    image: postgres:9.6-alpine
+    ports:
+      - 5432:5432
+    env_file:
+      - ./docker/postgres/.env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - gateway
+  redis:
+    image: redis:alpine
+    command: "redis-server"
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/data
+    networks:
+      - gateway
+volumes:
+  base_cache_rails:
+  base_gems:
+  base_packs:
+  postgres:
+  redis:
+
+networks:
+  gateway: {}

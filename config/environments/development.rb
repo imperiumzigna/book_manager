@@ -40,7 +40,7 @@ Rails.application.configure do
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
-
+  config.action_mailer.default_url_options = { host: "0.0.0.0", port: 3000 }
   # Raise exceptions for disallowed deprecations.
   config.active_support.disallowed_deprecation = :raise
 

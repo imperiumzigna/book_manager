@@ -1,3 +1,11 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  devise_for :users, path: "auth", path_names: { sign_in: "login", sign_out: "logout",
+    sign_up: "register" }, controllers: {
+      sessions: "users/sessions",
+      registrations: "users/registrations"
+    }
+
+  resources :books, only: [:index, :show]
+
+  root to: "books#index"
 end

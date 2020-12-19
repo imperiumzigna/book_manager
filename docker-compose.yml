@@ -33,14 +33,13 @@ x-shared-config: &shared-config
   depends_on:
     - postgres
     - redis
-
 services:
-  api:
+  app:
     <<: *shared-config
     command: bash -c "rm -f tmp/pids/server.pid && bundle install && bundle exec rails s -p 3000 -b '0.0.0.0'"
     ports:
       - 3000:3000
-  api-sidekiq:
+  app-sidekiq:
     <<: *shared-config
     command: bundle exec sidekiq -C config/sidekiq.yml
     networks:
@@ -64,6 +63,16 @@ services:
       - redis:/data
     networks:
       - gateway
+  chrome:
+    image: browserless/chrome:1.31-chrome-stable
+    ports:
+      - "3333:3333"
+    environment:
+      # By default, it uses 3000, which is typically used by Rails.
+      PORT: 3333
+      # Set connection timeout to avoid timeout exception during debugging
+      # https://docs.browserless.io/docs/docker.html#connection-timeout
+      CONNECTION_TIMEOUT: 600000
 volumes:
   base_cache_rails:
   base_gems:

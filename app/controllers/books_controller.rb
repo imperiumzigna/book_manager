@@ -1,10 +1,14 @@
 class BooksController < ApplicationController
+  layout "books"
   before_action :set_book, only: [:show, :edit, :update, :destroy]
-
   # GET /books
   # GET /books.json
+
   def index
-    @books = Book.all
+    @search = Book.search(search_params)
+    # make name the default sort column
+    @search.sorts = "title" if @search.sorts.empty?
+    @component = @search.result().page(params[:page])
   end
 
   # GET /books/1
@@ -28,7 +32,7 @@ class BooksController < ApplicationController
 
     respond_to do |format|
       if @book.save
-        format.html { redirect_to @book, notice: 'Book was successfully created.' }
+        format.html { redirect_to @book, notice: "Book was successfully created." }
         format.json { render :show, status: :created, location: @book }
       else
         format.html { render :new }
@@ -42,7 +46,7 @@ class BooksController < ApplicationController
   def update
     respond_to do |format|
       if @book.update(book_params)
-        format.html { redirect_to @book, notice: 'Book was successfully updated.' }
+        format.html { redirect_to @book, notice: "Book was successfully updated." }
         format.json { render :show, status: :ok, location: @book }
       else
         format.html { render :edit }
@@ -56,7 +60,7 @@ class BooksController < ApplicationController
   def destroy
     @book.destroy
     respond_to do |format|
-      format.html { redirect_to books_url, notice: 'Book was successfully destroyed.' }
+      format.html { redirect_to books_url, notice: "Book was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -70,5 +74,20 @@ class BooksController < ApplicationController
     # Only allow a list of trusted parameters through.
     def book_params
       params.require(:book).permit(:title, :description, :cover)
+    end
+
+    def search_params
+      params[:q]
+    end
+
+    def clear_search_index
+      if params[:search_cancel]
+        params.delete(:search_cancel)
+        if !search_params.nil?
+          search_params.each do |key, param|
+            search_params[key] = nil
+          end
+        end
+      end
     end
 end

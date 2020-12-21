@@ -2,7 +2,7 @@ IRB.conf[:USE_READLINE] = true
 IRB.conf[:AUTO_INDENT]  = false
 
 # Save History between irb sessions
-require 'irb/ext/save-history'
+require "irb/ext/save-history"
 IRB.conf[:SAVE_HISTORY] = 1000
 IRB.conf[:HISTORY_FILE] = "#{ENV['IRB_HISTFILE']}"
 
@@ -20,11 +20,11 @@ if defined?(Rails)
 
   # defining custom prompt
   IRB.conf[:PROMPT][:RAILS] = {
-    :PROMPT_I => "#{prompt}>> ",
-    :PROMPT_N => "#{prompt}> ",
-    :PROMPT_S => "#{prompt}* ",
-    :PROMPT_C => "#{prompt}? ",
-    :RETURN   => " => %s\n"
+    PROMPT_I: "#{prompt}>> ",
+    PROMPT_N: "#{prompt}> ",
+    PROMPT_S: "#{prompt}* ",
+    PROMPT_C: "#{prompt}? ",
+    RETURN: " => %s\n"
   }
 
   # Setting our custom prompt as prompt mode

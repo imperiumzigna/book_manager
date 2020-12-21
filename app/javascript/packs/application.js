@@ -11,9 +11,12 @@ import "channels"
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
-
 require("bootstrap")
 import "../stylesheets/application";
+
+import $ from 'jquery';
+global.$ = jQuery;
+
 document.addEventListener("turbolinks:load", function() {
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()

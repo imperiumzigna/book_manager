@@ -1,1 +1,11 @@
-@import '~bootstrap/scss/bootstrap'
+@import '~bootstrap/scss/bootstrap';
+
+th {
+  text-align: center; 
+  vertical-align: middle;
+}
+
+.navbar-brand {
+  text-decoration: none;
+  color: #525252;
+}

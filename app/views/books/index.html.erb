@@ -2,4 +2,14 @@
 
 <h1>Books</h1>
 
-<div id="components"><%= render 'components' %></div>
+<div class="container mb-5">
+<%= search_form_for @search, :remote => true do |f| %>
+<div class="input-group">
+<%= f.search_field :title_or_description_cont, class: "form-control" %>
+  <div class="input-group-append">
+  <%= f.submit "search", class: "btn btn-info"  %>
+  </div>
+</div>
+<% end %>
+</div>
+<div id="book-container"><%= render 'table' %></div>

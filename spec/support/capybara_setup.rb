@@ -1,27 +1,39 @@
-# spec/system/support/capybara_setup.rb
-
-Capybara.server_host = "0.0.0.0"
-# Usually, especially when using Selenium, developers tend to increase the max wait time.
-# With Cuprite, there is no need for that.
-# We use a Capybara default value here explicitly.
-Capybara.default_max_wait_time = 2
-
-# Normalize whitespaces when using `has_text?` and similar matchers,
-# i.e., ignore newlines, trailing spaces, etc.
-# That makes tests less dependent on slightly UI changes.
-Capybara.default_normalize_ws = true
-Capybara.app_host = "http://#{`hostname`.strip&.downcase || "0.0.0.0"}"
-# Where to store system tests artifacts (e.g. screenshots, downloaded files, etc.).
-# It could be useful to be able to configure this path from the outside (e.g., on CI).
-Capybara.save_path = ENV.fetch("CAPYBARA_ARTIFACTS", "./tmp/capybara")
-
-Capybara.singleton_class.prepend(Module.new do
-  attr_accessor :last_used_session
-
-  def using_session(name, &block)
-    self.last_used_session = name
-    super
-  ensure
-    self.last_used_session = nil
+if ENV["LAUNCH_BROWSER"]
+  # To test with browser opened in VNC screen sharing window
+  Capybara.configure do |config|
+    config.server_host = "web.com"
+    config.javascript_driver = :selenium_chrome
   end
-end)
+
+  Capybara.register_driver :selenium_chrome do |app|
+    Capybara::Selenium::Driver.new(
+      app,
+      browser: :remote,
+      desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(
+        chromeOptions: {
+          args: [
+            "window-size=1024,768"
+          ]
+        }
+      ),
+      url: "http://chrome:3333/wd/hub"
+    )
+  end
+else
+  # To test with headless browser inside web container
+  Capybara.server = :puma, { Silent: true }
+
+  Capybara.register_driver :chrome_headless do |app|
+    options = ::Selenium::WebDriver::Chrome::Options.new
+
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--window-size=1400,1400")
+
+    Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  end
+
+  Capybara.javascript_driver = :chrome_headless
+  Capybara.default_max_wait_time = 10
+end

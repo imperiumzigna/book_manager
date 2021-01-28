@@ -5,7 +5,7 @@
 <div class="container mb-5">
 <%= search_form_for @search, :remote => true do |f| %>
 <div class="input-group">
-<%= f.search_field :title_or_description_cont, class: "form-control" %>
+<%= f.search_field :title_or_description_or_author_cont, class: "form-control" %>
   <div class="input-group-append">
   <%= f.submit "search", class: "btn btn-info"  %>
   </div>

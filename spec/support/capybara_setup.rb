@@ -12,7 +12,7 @@ if ENV["LAUNCH_BROWSER"]
       desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(
         chromeOptions: {
           args: [
-            "window-size=1024,768"
+            "window-size=1024,768",
           ]
         }
       ),

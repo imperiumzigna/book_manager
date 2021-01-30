@@ -1,14 +1,14 @@
 class BooksController < ApplicationController
   layout "books"
   before_action :authenticate_admin!, only: [:new, :edit, :create, :update, :destroy]
-  before_action :set_book, only: [:show, :new, :edit, :create, :update, :destroy]
+  before_action :set_book, only: [:show, :edit, :create, :update, :destroy]
   before_action :clear_search_index, only: [:index]
 
 
   # GET /books
   # GET /books.json
   def index
-    authorize :index
+    authorize books
 
     @search = Book.ransack(search_params)
     # make name the default sort column
@@ -72,10 +72,17 @@ class BooksController < ApplicationController
   private
     def set_book
       @book = Book.find(params[:id])
+
+      authorize @book
     end
 
     def search_params
       params[:q]
+    end
+
+    def book_params
+      resource = @book || Book
+      params.require(:book).permit(*policy(resource).permitted_attributes)
     end
 
     def clear_search_index
@@ -91,5 +98,9 @@ class BooksController < ApplicationController
 
     def pundit_user
       current_admin || nil
+    end
+
+    def books
+      policy_scope(Book)
     end
 end

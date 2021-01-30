@@ -11,22 +11,30 @@
     </div>
   <% end %>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.label :title %>
-    <%= form.text_field :title %>
+    <%= form.text_field :title, class: "form-control" %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
+    <%= form.label :author %>
+    <%= form.text_field :author, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
     <%= form.label :description %>
-    <%= form.text_area :description %>
+    <%= form.text_area :description, class: "form-control" %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.label :cover %>
-    <%= form.text_field :cover %>
+    <%= form.text_field :cover, class: "form-control" %>
   </div>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= link_to 'Back', books_path, class: "btn btn-info" %>
+   <% if policy(Book).create? || policy(Book).update?  %>
+    <%= form.submit "Save Book", class: "btn btn-success" %>
+    <% end %>
   </div>
 <% end %>

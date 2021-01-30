@@ -4,6 +4,8 @@
   <thead>
     <tr>
     <th class="component_title_header_col"><%= sort_link @search, :title, "Title", {}, { :remote => true, :method => :get } %></th>
+    <th class="component_author_header_col">
+    Author</th>
     <th class="component_description_header_col">Description</th>
     <th>Cover</th>
     <th class="action_col"></th>
@@ -13,9 +15,17 @@
   <% @component.each do |component| %> 
   <tr>
   <td class="component_title_body_col"><%= component.title %></td>
+  <td class="component_author_body_col"><%= component.author %></td>
   <td class="component_description_body_col"><%= component.description %></td>
   <td><img alt="cover_image" class="img-thumbnail" src="<%= component.cover %>" /></td>
-  <td><%= link_to "Details",book_path(component) %></td>
+  <td><%= link_to "Details", book_path(component) %>
+      <% if policy(component).update?  %>
+      <%= link_to "Edit", edit_book_path(component) %>
+      <% end %>
+      <% if policy(component).destroy?  %>
+      <%= link_to "Remove", book_path(component), method: :delete, data: { confirm: 'Are you sure?' } %>
+      <% end %>
+  </td>
   </tr>
   <% end %>
 </tbody>

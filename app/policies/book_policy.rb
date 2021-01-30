@@ -27,8 +27,12 @@ class BookPolicy < ApplicationPolicy
     is_admin
   end
 
+  def permitted_attributes
+    [:title, :author, :description, :cover]
+  end
+
   private
     def is_admin
-      current_user.present?
+      user.present?
     end
 end

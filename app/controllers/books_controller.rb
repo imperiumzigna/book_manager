@@ -1,7 +1,7 @@
 class BooksController < ApplicationController
   layout "books"
   before_action :authenticate_admin!, only: [:new, :edit, :create, :update, :destroy]
-  before_action :set_book, only: [:show, :edit, :create, :update, :destroy]
+  before_action :set_book, only: [:show, :edit, :update, :destroy]
   before_action :clear_search_index, only: [:index]
 
 
@@ -33,6 +33,8 @@ class BooksController < ApplicationController
   # POST /books.json
   def create
     @book = Book.new(book_params)
+
+    authorize @book
 
     respond_to do |format|
       if @book.save
@@ -71,7 +73,7 @@ class BooksController < ApplicationController
 
   private
     def set_book
-      @book = Book.find(params[:id])
+      @book ||= Book.find(params[:id])
 
       authorize @book
     end

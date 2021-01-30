@@ -1,12 +1,15 @@
 class BooksController < ApplicationController
   layout "books"
-  before_action :set_book, only: [:show]
+  before_action :authenticate_admin!, only: [:new, :edit, :create, :update, :destroy]
+  before_action :set_book, only: [:show, :new, :edit, :create, :update, :destroy]
   before_action :clear_search_index, only: [:index]
 
 
   # GET /books
   # GET /books.json
   def index
+    authorize :index
+
     @search = Book.ransack(search_params)
     # make name the default sort column
     @search.sorts = "title" if @search.sorts.empty?
@@ -84,5 +87,9 @@ class BooksController < ApplicationController
           end
         end
       end
+    end
+
+    def pundit_user
+      current_admin || nil
     end
 end

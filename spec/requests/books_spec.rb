@@ -15,4 +15,7 @@ RSpec.describe "Books", type: :request do
       expect(response).to be_successful
     end
   end
+
+  describe "POST /books" do
+  end
 end

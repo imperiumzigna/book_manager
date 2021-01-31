@@ -1,39 +1,28 @@
-if ENV["LAUNCH_BROWSER"]
-  # To test with browser opened in VNC screen sharing window
-  Capybara.configure do |config|
-    config.server_host = "web.com"
-    config.javascript_driver = :selenium_chrome
-  end
+require "capybara/rspec"
+require "selenium-webdriver"
 
-  Capybara.register_driver :selenium_chrome do |app|
-    Capybara::Selenium::Driver.new(
-      app,
-      browser: :remote,
-      desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(
-        chromeOptions: {
-          args: [
-            "window-size=1024,768",
-          ]
-        }
-      ),
-      url: "http://chrome:3333/wd/hub"
-    )
-  end
-else
-  # To test with headless browser inside web container
-  Capybara.server = :puma, { Silent: true }
+Capybara.configure do |config|
+  Capybara.server_host = "0.0.0.0"
+  Capybara.server_port = 4000
+  Capybara.app_host = "http://website:4000"
+end
 
-  Capybara.register_driver :chrome_headless do |app|
-    options = ::Selenium::WebDriver::Chrome::Options.new
+Capybara.register_driver :headless_selenium_chrome do |app|
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+    chromeOptions: { args: %w(headless disable-gpu window-size=1440x768  acceptInsecureCerts=true --ignore-ssl-errors=yes) }
+  )
 
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--window-size=1400,1400")
+  Capybara::Selenium::Driver.new(app,
+    browser: :remote,
+    url: "http://chrome:4444/wd/hub",
+    desired_capabilities: capabilities,
+  )
+end
 
-    Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
-  end
-
-  Capybara.javascript_driver = :chrome_headless
-  Capybara.default_max_wait_time = 10
+Capybara.register_driver :selenium_chrome_in_container do |app|
+  Capybara::Selenium::Driver.new(app,
+    browser: :remote,
+    url: "http://chrome:4444/wd/hub",
+    desired_capabilities: :chrome
+  )
 end

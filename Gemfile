@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "2.7.1"
+ruby "2.5.1"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails"
 gem "rails", "~> 6.1.0"
@@ -35,7 +35,7 @@ group :development, :test do
   gem "pry-rails"
   gem "capybara"
   gem "selenium-webdriver"
-  gem "webdrivers"
+  gem "webdrivers", require: !ENV['SELENIUM_REMOTE_URL']
   
 end
 
@@ -54,6 +54,8 @@ end
 
 group :test do
   gem 'simplecov', require: false
+  gem 'database_cleaner'
+  gem 'simplecov-console'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

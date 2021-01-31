@@ -1,24 +1,45 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+![Cobertura](https://github.com/imperiumzigna/book_manager/coverage/coverage-badge.png)
 
-Things you may want to cover:
+## Solução para desafio Zygo/PagSeguro
 
-* Ruby version
+Este repositório contém minha implementação para o problema descrito [Link Original](https://github.com/zygotecnologia/zygo-programming-challenges/blob/master/developer/pleno/README.md) como parte do seletivo para a vaga de desenvolvedor Backend.
 
-* System dependencies
+[Home](https://github.com/imperiumzigna/book_manager/root_page.png)
+## Requisitos
 
-* Configuration
+* Ruby (2.7.1)
+* Ruby on Rails 6.1.0
+* Postgres 9.6
+* NodeJs v12
+## Setup
 
-* Database creation
+O projeto está configurado com docker.
 
-* Database initialization
+### Inicia a aplicação
 
-* How to run the test suite
+``` docker-compose up -d ```
 
-* Services (job queues, cache servers, search engines, etc.)
+### Roda as migrations
 
-* Deployment instructions
+``` 
+docker-compose exec website rails db:create 
+docker-compose exec website rails db:migrate 
+```
 
-* ...
+### Roda os seeds
+
+```
+ docker-compose exec website rails dev:populate
+```
+
+Ao final do comando será fornecido um email e senha para acesso admin
+
+### Roda os testes
+
+```
+ docker-compose exec website bundle exec rspec
+```
+
+

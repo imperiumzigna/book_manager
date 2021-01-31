@@ -33,14 +33,14 @@ RSpec.describe BooksController, type: :controller do
     end
 
     it "update book" do
-      book = Book.first
+      book = create(:book)
       post :update, params: { id: book.id, book: { title: "something" } }
       expect(response).to have_http_status(302)
-      expect(book.title).to eql("something")
+      expect("something").to eql(book.reload.title)
     end
 
     it "destroy book" do
-      book_id = Book.last.id
+      book_id = create(:book).id
       delete :destroy, params: { id: book_id }
       expect(response).to have_http_status(302)
       expect { Book.find(book_id) }.to raise_error(ActiveRecord::RecordNotFound)

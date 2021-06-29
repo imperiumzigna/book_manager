@@ -1,11 +1,8 @@
 # README
 
-## Solução para desafio Zygo/PagSeguro
+## Description
 
-Este repositório contém minha implementação para o problema descrito [Link Original](https://github.com/zygotecnologia/zygo-programming-challenges/blob/master/developer/pleno/README.md) como parte do seletivo para a vaga de desenvolvedor Backend.
-
-![Home](https://github.com/imperiumzigna/book_manager/blob/main/root_page.png)
-## Requisitos
+This is a toy app built to search books recomendations
 
 * Ruby (2.7.1)
 * Ruby on Rails 6.1.0
@@ -13,28 +10,28 @@ Este repositório contém minha implementação para o problema descrito [Link O
 * NodeJs v12
 ## Setup
 
-O projeto está configurado com docker.
+This project was setup with docker.
 
-### Inicia a aplicação
+### Start the app
 
 ``` docker-compose up -d ```
 
-### Roda as migrations
+### Database Setup
 
 ``` 
 docker-compose exec website rails db:create 
 docker-compose exec website rails db:migrate 
 ```
 
-### Roda os seeds
+### Populate the database
 
 ```
  docker-compose exec website rails dev:populate
 ```
 
-Ao final do comando será fornecido um email e senha para acesso admin
+Note: At the end of the execution of this command the console will show a dummy admin user
 
-### Roda os testes
+### Run tests
 
 ```
  docker-compose exec website bundle exec rspec

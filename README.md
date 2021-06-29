@@ -12,6 +12,8 @@ This is a toy app built to search books recomendations
 
 This project was setup with docker.
 
+![](./root_page.png)
+
 ### Start the app
 
 ``` docker-compose up -d ```
